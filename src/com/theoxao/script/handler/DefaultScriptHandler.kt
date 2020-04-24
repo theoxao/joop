@@ -10,5 +10,7 @@ import io.ktor.util.KtorExperimentalAPI
 @KtorExperimentalAPI
 class DefaultScriptHandler(scriptSupplier: GitlabScriptSupplier) : ScriptHandler {
 
+    private val basePath = scriptSupplier.basePath
+
 
 }

@@ -19,14 +19,14 @@ import java.net.URLEncoder
  * @date 2020/4/24
  */
 @KtorExperimentalAPI
-class GitlabScriptSupplier(private val httpClient: HttpClient, config: ApplicationConfig) : ScriptSupplier {
+class GitlabScriptSupplier(private val httpClient: HttpClient, val config: ApplicationConfig) : ScriptSupplier {
 
     private val baseUrl = config.property("gitlab.url").getString()
     private val repo = URLEncoder.encode(config.config("gitlab.repo").toString(), "UTF-8")
     private val repoUrl = "$baseUrl/projects/$repo"
     private val branch = config.property("gitlab.branch").getString().ifBlank { "master" }
     private val token = config.property("gitlab.token").getString()
-    private val basePath = URLEncoder.encode(config.property("gitlab.joop.basePath").getString(), "UTF-8")
+    val basePath = URLEncoder.encode(config.property("gitlab.joop.basePath").getString(), "UTF-8")
 
     /**
      * http://121.41.32.192:53001/api/v4/projects/70/repository/commits?ref=master&page=2&per_page=100
