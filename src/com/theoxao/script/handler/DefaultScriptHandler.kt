@@ -8,7 +8,7 @@ import io.ktor.util.KtorExperimentalAPI
  * @date 2020/4/24
  */
 @KtorExperimentalAPI
-class DefaultScriptHandler(scriptSupplier: GitlabScriptSupplier) {
+class DefaultScriptHandler(scriptSupplier: GitlabScriptSupplier) : ScriptHandler {
 
 
 }
