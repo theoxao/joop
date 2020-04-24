@@ -1,8 +1,10 @@
-package cc.hibay
+package cc.hibay.com.theoxao
 
+import cc.hibay.com.theoxao.script.GitlabScriptSupplier
+import com.theoxao.script.handler.DefaultScriptHandler
+import com.theoxao.config.Mongo
 import io.ktor.application.*
 import io.ktor.response.*
-import io.ktor.request.*
 import io.ktor.routing.*
 import io.ktor.http.*
 import freemarker.cache.*
@@ -12,21 +14,25 @@ import io.ktor.features.*
 import io.ktor.client.*
 import io.ktor.client.engine.jetty.*
 import io.ktor.client.features.json.*
-import io.ktor.client.request.*
-import kotlinx.coroutines.*
+import io.ktor.util.KtorExperimentalAPI
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused") // Referenced in application.conf
-@kotlin.jvm.JvmOverloads
-fun Application.module(testing: Boolean = false) {
+@KtorExperimentalAPI
+fun Application.main() = with(this) {
     install(FreeMarker) {
         templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
     }
 
     install(ContentNegotiation) {
-        gson {
-        }
+        gson()
+    }
+
+    val mongo = install(Mongo) {
+        kmongo()
     }
 
     val client = HttpClient(Jetty) {
@@ -34,33 +40,24 @@ fun Application.module(testing: Boolean = false) {
             serializer = GsonSerializer()
         }
     }
-    runBlocking {
-        // Sample for making a HTTP Client request
-        /*
-        val message = client.post<JsonSampleClass> {
-            url("http://127.0.0.1:8080/path/to/endpoint")
-            contentType(ContentType.Application.Json)
-            body = JsonSampleClass(hello = "world")
-        }
-        */
+
+    startKoin {
+        modules(
+            module {
+                single { client }
+                single { mongo.mongoApplication }
+            },
+            module {
+                single { GitlabScriptSupplier(get(), this@with.environment.config.config("gitlab")) }
+                single { DefaultScriptHandler(get()) }
+            }
+        )
     }
 
     routing {
         get("/") {
             call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
         }
-
-        get("/html-freemarker") {
-            call.respond(FreeMarkerContent("index.ftl", mapOf("data" to IndexData(listOf(1, 2, 3))), ""))
-        }
-
-        get("/json/gson") {
-            call.respond(mapOf("hello" to "world"))
-        }
     }
 }
-
-data class IndexData(val items: List<Int>)
-
-data class JsonSampleClass(val hello: String)
 
