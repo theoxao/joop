@@ -9,3 +9,5 @@ http://121.41.32.192:53001/api/v4/projects/70/repository/commits/f2531491e8baf88
 
 ##### diff a commit
 http://121.41.32.192:53001/api/v4/projects/70/repository/commits/f2531491e8baf881b0f312fe310a3ea9f1253a2d/diff?ref=master
+
+##### get raw blob

@@ -2,6 +2,7 @@ package com.theoxao.repository
 
 import com.mongodb.client.MongoCollection
 import com.theoxao.config.MongoApplication
+import com.theoxao.model.gitlab.Commit
 
 /**
  * @author theo

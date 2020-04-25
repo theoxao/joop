@@ -1,5 +1,6 @@
 package com.theoxao.config
 
+import com.mongodb.ConnectionString
 import com.mongodb.client.MongoDatabase
 import io.ktor.application.Application
 import io.ktor.application.ApplicationFeature
@@ -36,8 +37,8 @@ class MongoApplication {
 
     @KtorExperimentalAPI
     fun Application.kmongo(property: String = "database.mongo.uri") {
-        database =
-            KMongo.createClient(this.environment.config.property(property).getString()).getDatabase("database.mongo.db")
+        database = KMongo.createClient(ConnectionString(this.environment.config.property(property).getString()))
+            .getDatabase(this.environment.config.property("database.mongo.db").getString())
     }
 }
 

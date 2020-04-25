@@ -1,22 +1,26 @@
-package cc.hibay.com.theoxao
+package com.theoxao
 
 import cc.hibay.com.theoxao.script.GitlabScriptSupplier
-import com.theoxao.script.handler.DefaultScriptHandler
 import com.theoxao.config.Mongo
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.http.*
-import freemarker.cache.*
-import io.ktor.freemarker.*
-import io.ktor.gson.*
-import io.ktor.features.*
-import io.ktor.client.*
-import io.ktor.client.engine.jetty.*
-import io.ktor.client.features.json.*
+import com.theoxao.repository.CommitRepository
+import com.theoxao.repository.TreeNodeRepository
+import com.theoxao.script.handler.DefaultScriptHandler
+import freemarker.cache.ClassTemplateLoader
+import io.ktor.application.Application
+import io.ktor.application.install
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.features.json.JacksonSerializer
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.features.ContentNegotiation
+import io.ktor.freemarker.FreeMarker
+import io.ktor.jackson.jackson
+import io.ktor.routing.get
+import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import org.koin.ktor.ext.inject
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -28,16 +32,16 @@ fun Application.main() = with(this) {
     }
 
     install(ContentNegotiation) {
-        gson()
+        jackson()
     }
 
     val mongo = install(Mongo) {
         kmongo()
     }
 
-    val client = HttpClient(Jetty) {
+    val client = HttpClient(OkHttp) {
         install(JsonFeature) {
-            serializer = GsonSerializer()
+            serializer = JacksonSerializer()
         }
     }
 
@@ -48,15 +52,21 @@ fun Application.main() = with(this) {
                 single { mongo.mongoApplication }
             },
             module {
-                single { GitlabScriptSupplier(get(), this@with.environment.config.config("gitlab")) }
+                single { CommitRepository(get()) }
+                single { TreeNodeRepository(get()) }
+            },
+            module {
+                single { GitlabScriptSupplier(get(), this@with.environment.config.config("joop")) }
                 single { DefaultScriptHandler(get()) }
             }
         )
     }
 
+    val scriptHandler by inject<DefaultScriptHandler>()
+    scriptHandler.sync()
     routing {
         get("/") {
-            call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
+            scriptHandler.sync()
         }
     }
 }

@@ -1,6 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.Coroutines
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
@@ -11,11 +8,11 @@ plugins {
     kotlin("jvm") version "1.3.70"
 }
 
-group = "cc.hibay"
+group = "com.theoxao"
 version = "0.0.1"
 
 application {
-    mainClassName = "io.ktor.server.netty.EngineMain"
+    mainClassName = "com.theoxao.ApplicationKt"
 }
 
 repositories {
@@ -32,14 +29,19 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-freemarker:$ktor_version")
-    implementation("io.ktor:ktor-gson:$ktor_version")
+    implementation("io.ktor:ktor-jackson:$ktor_version")
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-core-jvm:$ktor_version")
-    implementation("io.ktor:ktor-client-jetty:$ktor_version")
+    implementation("io.ktor:ktor-client-okhttp:$ktor_version")
     implementation("io.ktor:ktor-client-json-jvm:$ktor_version")
-    implementation("io.ktor:ktor-client-gson:$ktor_version")
+    implementation("io.ktor:ktor-client-jackson:$ktor_version")
     implementation("org.litote.kmongo:kmongo:$kmongo_version")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
+    implementation("org.codehaus.groovy:groovy:3.0.3")
+    implementation("com.google.guava:guava:28.1-jre")
+    implementation("org.antlr:antlr4-runtime:4.6")
+    implementation("joda-time:joda-time:2.9.9")
+
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
