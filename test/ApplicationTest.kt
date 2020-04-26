@@ -1,15 +1,19 @@
 package cc.hibay
 
+import com.theoxao.antlr.KeyScriptListener
+import com.theoxao.antlr.preParse
 import com.theoxao.main
-import groovy.lang.GroovyShell
-import io.ktor.http.*
-import kotlin.test.*
-import io.ktor.server.testing.*
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.testing.handleRequest
+import io.ktor.server.testing.withTestApplication
 import io.ktor.util.KtorExperimentalAPI
 import org.joda.time.DateTime
 import java.io.File
 import java.io.FileInputStream
 import java.nio.charset.Charset
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @KtorExperimentalAPI
 class ApplicationTest {
@@ -30,10 +34,11 @@ class ApplicationTest {
 
     @Test
     fun testGroovyParser() {
-        val raw = FileInputStream(File("/home/theo/workspace/mzf/joop/test/Mask")).readBytes()
+        val raw = FileInputStream(File("/home/theo/workspace/mzf/joop/test/Keys")).readBytes()
             .toString(Charset.defaultCharset())
-        val script = GroovyShell().parse(raw)
-        println("halt")
+        preParse(raw) {
+            KeyScriptListener(it)
+        }
     }
 
 }

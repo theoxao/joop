@@ -189,8 +189,6 @@ public class Java8Parser extends Parser {
 	 */
 	@Deprecated
 	public static final String[] tokenNames;
-	public static final ATN _ATN =
-			new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 			new PredictionContextCache();
@@ -1457,6 +1455,8 @@ public class Java8Parser extends Parser {
 			},
 			""
 	);
+	public static final ATN _ATN =
+			new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 
 	static {
 		RuntimeMetaData.checkVersion("4.6", RuntimeMetaData.VERSION);
