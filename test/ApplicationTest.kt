@@ -1,6 +1,6 @@
 package cc.hibay
 
-import com.theoxao.antlr.KeyScriptListener
+import com.theoxao.antlr.TableWalker
 import com.theoxao.antlr.preParse
 import com.theoxao.main
 import io.ktor.http.HttpMethod
@@ -34,10 +34,10 @@ class ApplicationTest {
 
     @Test
     fun testGroovyParser() {
-        val raw = FileInputStream(File("/home/theo/workspace/mzf/joop/test/Keys")).readBytes()
+        val raw = FileInputStream(File("/home/theo/workspace/mzf/joop/test/tables/TableExample")).readBytes()
             .toString(Charset.defaultCharset())
         preParse(raw) {
-            KeyScriptListener(it)
+            TableWalker(it)
         }
     }
 
