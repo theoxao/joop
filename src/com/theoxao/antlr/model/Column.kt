@@ -8,6 +8,8 @@ import org.antlr.v4.runtime.tree.ParseTree
  * @date 2020/4/27
  */
 class Column : Definition {
+    lateinit var table: String
+
     lateinit var name: String
     lateinit var dataType: String
     var length: Int = -1

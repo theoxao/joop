@@ -4,6 +4,9 @@ import com.theoxao.antlr.autogen.JavaLexer
 import com.theoxao.antlr.autogen.JavaParser
 import com.theoxao.antlr.autogen.JavaParserBaseListener
 import com.theoxao.antlr.model.Column
+import com.theoxao.antlr.model.ForeignKey
+import com.theoxao.antlr.model.IdentityKey
+import com.theoxao.antlr.model.UniqueKey
 import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.tree.ParseTreeWalker
 
@@ -12,7 +15,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker
  * @date 2020/4/27
  */
 
-fun preParse(text: String, listenerProvider: (TokenStream) -> JavaParserBaseListener) {
+fun preParse(text: String, listenerProvider: (TokenStream) -> KeyWalker) {
     val stream = ANTLRInputStream(text)
     val lexer = JavaLexer(stream)
     val tokenStream = CommonTokenStream(lexer)
@@ -30,7 +33,9 @@ class TableWalker(tokenStream: TokenStream) : JavaParserBaseListener() {
     var writer: TokenStreamRewriter = TokenStreamRewriter(tokenStream)
 
 
-    val columns: MutableList<Column> = mutableListOf()
+    var columns: MutableList<Column> = mutableListOf()
+
+    var tableName: String? = null
 
     override fun enterFieldDeclaration(ctx: JavaParser.FieldDeclarationContext) {
         if (ctx.typeType().classOrInterfaceType().IDENTIFIER(0).text == "TableField") {
@@ -50,6 +55,12 @@ class TableWalker(tokenStream: TokenStream) : JavaParserBaseListener() {
         }
     }
 
+    override fun enterConstructorDeclaration(ctx: JavaParser.ConstructorDeclarationContext) {
+        this.tableName =
+            ctx.constructorBody?.blockStatement(0)?.statement()?.expression()?.methodCall()?.expressionList()
+                ?.expression(0)?.text
+    }
+
     private fun JavaParser.ExpressionContext.dataType(column: Column) {
         val node1 = this.getChild(0) as JavaParser.ExpressionContext
         val node3 = this.getChild(2)
@@ -65,3 +76,31 @@ class TableWalker(tokenStream: TokenStream) : JavaParserBaseListener() {
 
 }
 
+
+class KeyWalker(tokenStream: TokenStream) : JavaParserBaseListener() {
+
+    val identityKeys = mutableListOf<IdentityKey>()
+    val uniqueKeys = mutableListOf<UniqueKey>()
+    val foreignKeys = mutableListOf<ForeignKey>()
+
+    override fun enterClassDeclaration(ctx: JavaParser.ClassDeclarationContext) {
+        if (ctx.typeType().classOrInterfaceType().text != "AbstractKeys") return
+        ctx.classBody().classBodyDeclaration().forEach {
+            val fd = it.memberDeclaration().fieldDeclaration()
+            val keyType = fd.typeType().classOrInterfaceType().IDENTIFIER(0).text
+            val vd = fd.variableDeclarators().variableDeclarator(0)
+            val keyId = vd.variableDeclaratorId().IDENTIFIER().text
+            val el = vd.variableInitializer().expression().methodCall().expressionList()
+            when (keyType) {
+                "Identity" -> {
+                }
+                "UniqueKey" -> {
+                    el.expression(0).primary().IDENTIFIER()
+                }
+                "ForeignKey" -> {
+                }
+            }
+
+        }
+    }
+}
