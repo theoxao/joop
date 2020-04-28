@@ -1,11 +1,10 @@
-package com.theoxao.script.handler
+package com.theoxao.script.repo
 
 import cc.hibay.com.theoxao.script.GitlabScriptSupplier
 import com.theoxao.model.gitlab.TreeNode
 import com.theoxao.repository.CommitRepository
 import com.theoxao.repository.TreeNodeRepository
 import io.ktor.util.KtorExperimentalAPI
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import org.koin.java.KoinJavaComponent.inject
 import org.slf4j.LoggerFactory
@@ -15,9 +14,9 @@ import org.slf4j.LoggerFactory
  * @date 2020/4/24
  */
 @KtorExperimentalAPI
-class DefaultScriptHandler(
+class DefaultScriptRepo(
     private val scriptSupplier: GitlabScriptSupplier
-) : ScriptHandler {
+) : ScriptRepo {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 

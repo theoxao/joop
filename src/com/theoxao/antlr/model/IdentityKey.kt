@@ -5,6 +5,8 @@ package com.theoxao.antlr.model
  * @date 2020/4/26
  */
 class IdentityKey(
+    var commitId: String,
+    var keyId: String,
     var tableName: String,
-    var field: String
-)
+    var columnName: String
+) : Key

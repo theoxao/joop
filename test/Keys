@@ -7,6 +7,13 @@ public class Keys {
 
     public static final ForeignKey<TableExampleRecord, FkRecord> FK_REFERENCE_KEY = ForeignKeys0.FK_REFERENCE_KEY;
 
+    private static class Identities0 extends AbstractKeys {
+        public static Identity<EventRecord, Long> IDENTITY_EVENT = createIdentity(Event.EVENT, Event.EVENT.ID);
+        public static Identity<LoanFlowRecord, Long> IDENTITY_LOAN_FLOW = createIdentity(LoanFlow.LOAN_FLOW, LoanFlow.LOAN_FLOW.ID);
+        public static Identity<MaskRecord, Integer> IDENTITY_MASK = createIdentity(Mask.MASK, Mask.MASK.ID);
+    }
+
+
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<FkRecord> KEY_FK_PRIMARY = createUniqueKey(Fk.FK, "KEY_fk_PRIMARY", Fk.FK.FK_);
         public static final UniqueKey<IdetityExampleRecord> KEY_IDETITY_EXAMPLE_PRIMARY = createUniqueKey(IdetityExample.IDETITY_EXAMPLE, "KEY_idetity_example_PRIMARY", IdetityExample.IDETITY_EXAMPLE.ID);

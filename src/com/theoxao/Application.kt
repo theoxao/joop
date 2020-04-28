@@ -4,7 +4,7 @@ import cc.hibay.com.theoxao.script.GitlabScriptSupplier
 import com.theoxao.config.Mongo
 import com.theoxao.repository.CommitRepository
 import com.theoxao.repository.TreeNodeRepository
-import com.theoxao.script.handler.DefaultScriptHandler
+import com.theoxao.script.repo.DefaultScriptRepo
 import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.Application
 import io.ktor.application.install
@@ -57,12 +57,12 @@ fun Application.main() = with(this) {
             },
             module {
                 single { GitlabScriptSupplier(get(), this@with.environment.config.config("joop")) }
-                single { DefaultScriptHandler(get()) }
+                single { DefaultScriptRepo(get()) }
             }
         )
     }
 
-    val scriptHandler by inject<DefaultScriptHandler>()
+    val scriptHandler by inject<DefaultScriptRepo>()
     scriptHandler.sync()
     routing {
         get("/") {
