@@ -1,5 +1,6 @@
 package com.theoxao.ktor
 
+import com.theoxao.service.CSVService
 import com.theoxao.service.SqlService
 import io.ktor.application.Application
 import io.ktor.application.call
@@ -17,8 +18,17 @@ import org.koin.ktor.ext.inject
 fun Application.base() = with(this) {
 
     val sqlService: SqlService by inject()
+    val csvService: CSVService by inject()
 
     routing {
+
+        route("/git") {
+            get("/commits") {
+
+            }
+        }
+
+
         route("/joop") {
             get("/sql_script") {
                 val id = this.call.request.queryParameters["id"]!!

@@ -40,9 +40,12 @@ class GitlabScriptSupplier(private val httpClient: HttpClient, val config: Appli
      */
     suspend fun fetchCommits(ref: String = branch, baseCommit: String): List<Commit> {
         val url = "$repoUrl/repository/commits"
-        return getPagination<Commit>(url, mutableMapOf("ref" to ref)) {
+        return getPagination<Commit>(url, mutableMapOf("ref_name" to ref)) {
             it.map { commit -> commit.id }
                 .contains(baseCommit)
+        }.map {
+            it.branch = branch
+            it
         }
     }
 
@@ -87,7 +90,7 @@ class GitlabScriptSupplier(private val httpClient: HttpClient, val config: Appli
         val list = arrayListOf<List<T>>()
         do {
             params["page"] = nextPage
-            params["per_page"] = 20
+            params["per_page"] = 100
             val response = httpClient.get<HttpResponse>(url) {
                 this.header("PRIVATE-TOKEN", token)
                 params.forEach { (key, value) ->

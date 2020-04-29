@@ -36,7 +36,7 @@ class DefaultScriptRepo(
 
     suspend fun getCommits() {
         val lastCommit = commitRepository.findLatest()
-        val list = scriptSupplier.fetchCommits("master", lastCommit?.id ?: baseCommit).toMutableList()
+        val list = scriptSupplier.fetchCommits(baseCommit = lastCommit?.id ?: baseCommit).toMutableList()
             .sortedBy { it.committedDate }
         commitRepository.save(list)
     }

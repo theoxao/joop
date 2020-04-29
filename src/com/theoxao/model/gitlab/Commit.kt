@@ -36,4 +36,7 @@ data class Commit(
 
     @JsonProperty("nodes")
     var nodes: List<String>? = null
+
+    @JsonProperty("branch")
+    lateinit var branch: String
 }
