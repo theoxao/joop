@@ -37,7 +37,6 @@ dependencies {
     implementation("io.ktor:ktor-client-jackson:$ktor_version")
     implementation("org.litote.kmongo:kmongo:$kmongo_version")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
-    implementation("org.codehaus.groovy:groovy:3.0.3")
     implementation("com.google.guava:guava:28.1-jre")
     implementation("org.antlr:antlr4-runtime:4.6")
     implementation("joda-time:joda-time:2.9.9")

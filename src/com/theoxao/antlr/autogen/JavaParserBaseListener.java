@@ -12,17 +12,17 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  */
 abstract public class JavaParserBaseListener implements JavaParserListener {
 
-	abstract public Object combineResult();
+    abstract public Object emmit();
 
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override
-	public void enterCompilationUnit(JavaParser.CompilationUnitContext ctx) {
-	}
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override
+    public void enterCompilationUnit(JavaParser.CompilationUnitContext ctx) {
+    }
 
 	/**
 	 * {@inheritDoc}

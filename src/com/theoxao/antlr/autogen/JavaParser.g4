@@ -16,8 +16,24 @@ importDeclaration
 
 typeDeclaration
     : classOrInterfaceModifier*
-      classDeclaration
+      (classDeclaration | enumDeclaration)
     | ';'
+    ;
+
+enumDeclaration
+    : ENUM IDENTIFIER (IMPLEMENTS typeList)? '{' enumConstants? ','? enumBodyDeclarations? '}'
+    ;
+
+enumConstants
+     : enumConstant (',' enumConstant)*
+     ;
+
+enumConstant
+    : annotation* IDENTIFIER arguments? classBody?
+    ;
+
+enumBodyDeclarations
+    : ';' classBodyDeclaration*
     ;
 
 modifier
@@ -80,6 +96,7 @@ memberDeclaration
     | constructorDeclaration
     | genericConstructorDeclaration
     | classDeclaration
+    | enumDeclaration
     ;
 
 /* We use rule this even for void methods which cannot have [] after parameters.

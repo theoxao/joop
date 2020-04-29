@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.DefaultErrorStrategy
 import org.antlr.v4.runtime.tree.ParseTreeWalker
+import org.litote.kmongo.index
 
 /**
  * @author theo
@@ -37,9 +38,11 @@ const val foreignKey = "ForeignKey"
 
 class TableWalker(private val commitId: String) : JavaParserBaseListener() {
 
-    var columns: MutableList<Column> = mutableListOf()
+    private var columns: MutableList<Column> = mutableListOf()
 
-    var tableName: String = ""
+    private var tableName: String = ""
+
+    private val indexes = mutableListOf<IndexKey>()
 
     override fun enterFieldDeclaration(ctx: JavaParser.FieldDeclarationContext) {
         if (ctx.typeType().classOrInterfaceType().IDENTIFIER(0).text == "TableField") {
@@ -64,8 +67,8 @@ class TableWalker(private val commitId: String) : JavaParserBaseListener() {
                 ?.expression(0)?.text ?: ""
     }
 
-    override fun combineResult(): Definition {
-        return Table(commitId, tableName, columns, "to do schema")
+    override fun emmit(): Definition {
+        return Table(commitId, "to do schema", tableName, columns, indexes)
     }
 
     private fun JavaParser.ExpressionContext.dataType(column: Column) {
@@ -77,6 +80,23 @@ class TableWalker(private val commitId: String) : JavaParserBaseListener() {
             node1.dataType(column)
         } else {
             column.dataType = this.text
+        }
+    }
+
+    //walk for indexes
+    override fun enterClassDeclaration(ctx: JavaParser.ClassDeclarationContext) {
+        if (ctx.typeType()?.classOrInterfaceType()?.text != "AbstractIndex") return
+        ctx.classBody().classBodyDeclaration().firstOrNull()?.let { cbd ->
+            val fd = cbd.memberDeclaration().fieldDeclaration()
+            val keyType = fd.typeType().classOrInterfaceType().IDENTIFIER(0)
+            val vd = fd.variableDeclarators().variableDeclarator(0)
+            val keyId = vd.variableDeclaratorId().IDENTIFIER().text
+            val el = vd.variableInitializer().expression().methodCall().expressionList()
+            val tableName = el.expression(0).IDENTIFIER().text
+            val indexName = el.expression(1).IDENTIFIER().text
+            val columns = el.expression().filterIndexed { index, _ -> index > 1 }
+                .map { it.IDENTIFIER().text }
+            indexes.add(IndexKey(commitId, tableName, indexName, columns))
         }
     }
 }
@@ -121,7 +141,7 @@ class KeyWalker(private val commitId: String) : JavaParserBaseListener() {
         println("halt")
     }
 
-    override fun combineResult(): Map<String, List<Key>> {
+    override fun emmit(): Map<String, List<Key>> {
         return mapOf(
             identity to identityKeys,
             uniqueKey to uniqueKeys,

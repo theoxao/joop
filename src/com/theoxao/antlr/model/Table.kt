@@ -6,9 +6,10 @@ package com.theoxao.antlr.model
  */
 class Table(
     var commitId: String,
+    var schema: String,
     var tableName: String,
     var columns: List<Column>,
-    var schema: String
+    var indexes: List<IndexKey>
 ) : Definition {
 
     fun drop(): String {
