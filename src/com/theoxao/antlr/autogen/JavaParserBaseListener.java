@@ -10,19 +10,15 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
-abstract public class JavaParserBaseListener implements JavaParserListener {
-
-    abstract public Object emmit();
-
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override
-    public void enterCompilationUnit(JavaParser.CompilationUnitContext ctx) {
-    }
+public class JavaParserBaseListener implements JavaParserListener {
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override
+	public void enterCompilationUnit(JavaParser.CompilationUnitContext ctx) {
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -85,6 +81,78 @@ abstract public class JavaParserBaseListener implements JavaParserListener {
 	 */
 	@Override
 	public void exitTypeDeclaration(JavaParser.TypeDeclarationContext ctx) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override
+	public void enterEnumDeclaration(JavaParser.EnumDeclarationContext ctx) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override
+	public void exitEnumDeclaration(JavaParser.EnumDeclarationContext ctx) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override
+	public void enterEnumConstants(JavaParser.EnumConstantsContext ctx) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override
+	public void exitEnumConstants(JavaParser.EnumConstantsContext ctx) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override
+	public void enterEnumConstant(JavaParser.EnumConstantContext ctx) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override
+	public void exitEnumConstant(JavaParser.EnumConstantContext ctx) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override
+	public void enterEnumBodyDeclarations(JavaParser.EnumBodyDeclarationsContext ctx) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override
+	public void exitEnumBodyDeclarations(JavaParser.EnumBodyDeclarationsContext ctx) {
 	}
 
 	/**
@@ -1226,34 +1294,23 @@ abstract public class JavaParserBaseListener implements JavaParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override
-	public void enterEveryRule(ParserRuleContext ctx) {
-	}
-
+	@Override public void enterEveryRule(ParserRuleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override
-	public void exitEveryRule(ParserRuleContext ctx) {
-	}
-
+	@Override public void exitEveryRule(ParserRuleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override
-	public void visitTerminal(TerminalNode node) {
-	}
-
+	@Override public void visitTerminal(TerminalNode node) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override
-	public void visitErrorNode(ErrorNode node) {
-	}
+	@Override public void visitErrorNode(ErrorNode node) { }
 }
