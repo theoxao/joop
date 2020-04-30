@@ -3,6 +3,7 @@ package com.theoxao
 import cc.hibay.com.theoxao.script.GitlabScriptSupplier
 import com.theoxao.config.Mongo
 import com.theoxao.repository.CommitRepository
+import com.theoxao.repository.TagRepository
 import com.theoxao.repository.TreeNodeRepository
 import com.theoxao.script.repo.DefaultScriptRepo
 import freemarker.cache.ClassTemplateLoader
@@ -54,6 +55,7 @@ fun Application.main() = with(this) {
             module {
                 single { CommitRepository(get()) }
                 single { TreeNodeRepository(get()) }
+                single { TagRepository(get()) }
             },
             module {
                 single { GitlabScriptSupplier(get(), this@with.environment.config.config("joop")) }

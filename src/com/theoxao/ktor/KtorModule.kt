@@ -3,6 +3,7 @@ package com.theoxao.ktor
 import com.theoxao.service.CSVService
 import com.theoxao.service.SqlService
 import io.ktor.application.Application
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.response.respond
 import io.ktor.routing.get
@@ -24,7 +25,9 @@ fun Application.base() = with(this) {
 
         route("/git") {
             get("/commits") {
-
+                val branch = this.call.param("branch")
+                val list = csvService.getCommits(branch)
+                this.call.respond(list)
             }
         }
 
@@ -38,4 +41,8 @@ fun Application.base() = with(this) {
         }
     }
 
+}
+
+fun ApplicationCall.param(name: String): String? {
+    return this.request.queryParameters[name]
 }

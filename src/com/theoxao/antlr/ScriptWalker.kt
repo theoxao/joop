@@ -8,7 +8,6 @@ import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.DefaultErrorStrategy
 import org.antlr.v4.runtime.tree.ParseTreeWalker
-import org.litote.kmongo.index
 
 /**
  * @author theo
@@ -46,7 +45,6 @@ class TableWalker(private val commitId: String) : JavaParserBaseListener() {
 
     override fun enterFieldDeclaration(ctx: JavaParser.FieldDeclarationContext) {
         if (ctx.typeType().classOrInterfaceType().IDENTIFIER(0).text == "TableField") {
-
             val vdc = ctx.variableDeclarators().variableDeclarator(0)
             val mc = vdc.variableInitializer().expression().methodCall()
             val elc = mc.children[2] as JavaParser.ExpressionListContext
@@ -65,10 +63,6 @@ class TableWalker(private val commitId: String) : JavaParserBaseListener() {
         this.tableName =
             ctx.constructorBody?.blockStatement(0)?.statement()?.expression()?.methodCall()?.expressionList()
                 ?.expression(0)?.text ?: ""
-    }
-
-    override fun emmit(): Definition {
-        return Table(commitId, "to do schema", tableName, columns, indexes)
     }
 
     private fun JavaParser.ExpressionContext.dataType(column: Column) {
@@ -140,13 +134,22 @@ class KeyWalker(private val commitId: String) : JavaParserBaseListener() {
         }
         println("halt")
     }
+}
 
-    override fun emmit(): Map<String, List<Key>> {
-        return mapOf(
-            identity to identityKeys,
-            uniqueKey to uniqueKeys,
-            foreignKey to foreignKeys
-        )
+class EnumWalker(commitId: String) : JavaParserBaseListener() {
 
+    lateinit var enumName: String
+
+    lateinit var enums: List<String>
+
+    override fun enterEnumDeclaration(ctx: JavaParser.EnumDeclarationContext) {
+        this.enumName = ctx.IDENTIFIER().text
     }
+
+    override fun enterEnumConstants(ctx: JavaParser.EnumConstantsContext) {
+        enums = ctx.enumConstant().map {
+            it.IDENTIFIER().text
+        }
+    }
+
 }

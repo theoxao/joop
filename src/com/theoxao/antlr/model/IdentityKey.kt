@@ -9,4 +9,12 @@ class IdentityKey(
     var keyId: String,
     var tableName: String,
     var columnName: String
-) : Key
+) : Key {
+    override fun add() = """"""
+
+    override fun create() = ""
+    fun drop(): String {
+        TODO("Not yet implemented")
+    }
+
+}

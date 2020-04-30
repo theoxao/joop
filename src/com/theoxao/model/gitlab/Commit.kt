@@ -38,5 +38,8 @@ data class Commit(
     var nodes: List<String>? = null
 
     @JsonProperty("branch")
-    lateinit var branch: String
+    var branch: String = "master"
+
+    @JsonProperty("tag_name")
+    var tagName: String? = null
 }

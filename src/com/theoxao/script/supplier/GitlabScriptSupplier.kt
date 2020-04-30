@@ -2,6 +2,7 @@ package cc.hibay.com.theoxao.script
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.theoxao.model.gitlab.Commit
+import com.theoxao.model.gitlab.Tag
 import com.theoxao.model.gitlab.TreeNode
 import com.theoxao.script.supplier.ScriptSupplier
 import io.ktor.client.HttpClient
@@ -28,7 +29,7 @@ class GitlabScriptSupplier(private val httpClient: HttpClient, val config: Appli
     private val baseUrl = config.property("gitlab.url").getString()
     private val repo = URLEncoder.encode(config.property("gitlab.repo").getString(), "UTF-8")
     private val repoUrl = "$baseUrl/projects/$repo"
-    private val branch = config.property("gitlab.branch").getString().ifBlank { "master" }
+    val branch = config.property("gitlab.branch").getString().ifBlank { "master" }
     private val token = config.property("gitlab.token").getString()
     val basePath: String = config.property("basePath").getString()
 
@@ -69,6 +70,16 @@ class GitlabScriptSupplier(private val httpClient: HttpClient, val config: Appli
         val url = "$repoUrl/repository/blobs/$blobId/raw"
         return get(url)
     }
+
+    /**
+     * http://121.41.32.192:53001/api/v4/projects/70/repository/blobs/c2c109058215eb64d14ab7f2b0f9e76a7a915314/raw
+     */
+
+    suspend fun fetchTags(): List<Tag> {
+        val url = "$repoUrl/repository/tags"
+        return getPagination(url)
+    }
+
 
     private suspend inline fun <reified T> get(url: String, params: MutableMap<String, Any?> = mutableMapOf()): T {
         log.info("request for {}", url)

@@ -3,6 +3,7 @@ package com.theoxao.script.repo
 import cc.hibay.com.theoxao.script.GitlabScriptSupplier
 import com.theoxao.model.gitlab.TreeNode
 import com.theoxao.repository.CommitRepository
+import com.theoxao.repository.TagRepository
 import com.theoxao.repository.TreeNodeRepository
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.runBlocking
@@ -22,15 +23,19 @@ class DefaultScriptRepo(
 
     private val commitRepository by inject(CommitRepository::class.java)
     private val treeNodeRepository by inject(TreeNodeRepository::class.java)
+    private val tagRepository: TagRepository by inject(TagRepository::class.java)
+
 
     private val basePath = scriptSupplier.basePath
     private val baseCommit = scriptSupplier.config.property("baseCommit").getString()
+    private val branch = scriptSupplier.branch
 
     fun sync() {
         runBlocking {
             getCommits()
             getTreeNode()
             getBlob()
+            getTags()
         }
     }
 
@@ -58,6 +63,13 @@ class DefaultScriptRepo(
             val blob = scriptSupplier.fetchRawScript(it.id)
             treeNodeRepository.updateBlob(it.id, blob)
         }
+    }
+
+    suspend fun getTags() {
+        val list = scriptSupplier.fetchTags()
+        log.info("fetched {} tags ", list.size)
+        tagRepository.save(list)
+        commitRepository.updateTags(branch, list)
     }
 
 

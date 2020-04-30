@@ -2,15 +2,13 @@ package com.theoxao.antlr.autogen;
 
 // Generated from JavaParser.g4 by ANTLR 4.6
 
+import com.theoxao.antlr.model.Definition;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
 
 import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class JavaParser extends Parser {
@@ -432,7 +430,7 @@ public class JavaParser extends Parser {
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 			new PredictionContextCache();
-	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+
 	private static final String[] _LITERAL_NAMES = {
 			null, "'abstract'", "'assert'", "'boolean'", "'break'", "'byte'", "'case'",
 			"'catch'", "'char'", "'class'", "'const'", "'continue'", "'default'",
@@ -450,19 +448,6 @@ public class JavaParser extends Parser {
 			"'>>>='", "'->'", "'::'", "'@'", "'...'"
 	};
 
-	static {
-		tokenNames = new String[_SYMBOLIC_NAMES.length];
-		for (int i = 0; i < tokenNames.length; i++) {
-			tokenNames[i] = VOCABULARY.getLiteralName(i);
-			if (tokenNames[i] == null) {
-				tokenNames[i] = VOCABULARY.getSymbolicName(i);
-			}
-
-			if (tokenNames[i] == null) {
-				tokenNames[i] = "<INVALID>";
-			}
-		}
-	}
 
 	@Override
 	@Deprecated
@@ -497,6 +482,22 @@ public class JavaParser extends Parser {
 
 	static {
 		RuntimeMetaData.checkVersion("4.6", RuntimeMetaData.VERSION);
+	}
+
+	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+
+	static {
+		tokenNames = new String[_SYMBOLIC_NAMES.length];
+		for (int i = 0; i < tokenNames.length; i++) {
+			tokenNames[i] = VOCABULARY.getLiteralName(i);
+			if (tokenNames[i] == null) {
+				tokenNames[i] = VOCABULARY.getSymbolicName(i);
+			}
+
+			if (tokenNames[i] == null) {
+				tokenNames[i] = "<INVALID>";
+			}
+		}
 	}
 
 	static {
