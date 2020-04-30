@@ -8,6 +8,7 @@ import com.theoxao.repository.TreeNodeRepository
 import com.theoxao.script.repo.DefaultScriptRepo
 import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.Application
+import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -15,7 +16,9 @@ import io.ktor.client.features.json.JacksonSerializer
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.features.ContentNegotiation
 import io.ktor.freemarker.FreeMarker
+import io.ktor.freemarker.FreeMarkerContent
 import io.ktor.jackson.jackson
+import io.ktor.response.respond
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
@@ -29,6 +32,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @KtorExperimentalAPI
 fun Application.main() = with(this) {
     install(FreeMarker) {
+        setSharedVariable("static_base", "http://localhost:9182/static")
         templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
     }
 
@@ -68,7 +72,7 @@ fun Application.main() = with(this) {
     scriptHandler.sync()
     routing {
         get("/") {
-            scriptHandler.sync()
+            call.respond(FreeMarkerContent("index.ftl", null))
         }
     }
 }

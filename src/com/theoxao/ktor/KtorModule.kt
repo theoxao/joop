@@ -5,6 +5,10 @@ import com.theoxao.service.SqlService
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
+import io.ktor.http.content.file
+import io.ktor.http.content.files
+import io.ktor.http.content.resources
+import io.ktor.http.content.static
 import io.ktor.response.respond
 import io.ktor.routing.get
 import io.ktor.routing.route
@@ -39,8 +43,10 @@ fun Application.base() = with(this) {
                 this.call.respond(sqlService.getSqlScript(id))
             }
         }
+        static("/static") {
+            resources("static/")
+        }
     }
-
 }
 
 fun ApplicationCall.param(name: String): String? {

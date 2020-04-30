@@ -31,16 +31,4 @@ class ApplicationTest {
     fun testInjection() {
         println(DateTime.parse("2020-04-25T12:13:57.000+08:00").toDate())
     }
-
-    @Test
-    fun testGroovyParser() {
-        val raw = FileInputStream(File("/home/theo/workspace/mzf/joop/test/Keys")).readBytes()
-            .toString(Charset.defaultCharset())
-        preParse(raw, {
-            KeyWalker("123")
-        }, {
-
-        })
-    }
-
 }
