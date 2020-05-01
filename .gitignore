@@ -5,3 +5,10 @@
 *.iml
 *.ipr
 *.iws
+/resources/static/node_modules/
+/resources/static/vendor/bootstrap-switch/css/bootstrap2/bootstrap-switch.css
+/resources/static/vendor/bootstrap-switch/css/bootstrap2/bootstrap-switch.min.css
+/resources/static/vendor/bootstrap-switch/css/bootstrap3/bootstrap-switch.css
+/resources/static/vendor/bootstrap-switch/css/bootstrap3/bootstrap-switch.min.css
+/resources/static/vendor/bootstrap-switch/js/bootstrap-switch.js
+/resources/static/vendor/bootstrap-switch/js/bootstrap-switch.min.js

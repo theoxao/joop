@@ -6,6 +6,7 @@ import com.theoxao.repository.CommitRepository
 import com.theoxao.repository.TagRepository
 import com.theoxao.repository.TreeNodeRepository
 import com.theoxao.script.repo.DefaultScriptRepo
+import com.theoxao.service.VCSService
 import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.Application
 import io.ktor.application.call
@@ -64,16 +65,13 @@ fun Application.main() = with(this) {
             module {
                 single { GitlabScriptSupplier(get(), this@with.environment.config.config("joop")) }
                 single { DefaultScriptRepo(get()) }
+                single { VCSService(get()) }
             }
         )
     }
 
     val scriptHandler by inject<DefaultScriptRepo>()
     scriptHandler.sync()
-    routing {
-        get("/") {
-            call.respond(FreeMarkerContent("index.ftl", null))
-        }
-    }
+
 }
 

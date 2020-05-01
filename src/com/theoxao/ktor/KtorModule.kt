@@ -1,12 +1,11 @@
 package com.theoxao.ktor
 
-import com.theoxao.service.CSVService
 import com.theoxao.service.SqlService
+import com.theoxao.service.VCSService
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
-import io.ktor.http.content.file
-import io.ktor.http.content.files
+import io.ktor.freemarker.FreeMarkerContent
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.response.respond
@@ -23,19 +22,9 @@ import org.koin.ktor.ext.inject
 fun Application.base() = with(this) {
 
     val sqlService: SqlService by inject()
-    val csvService: CSVService by inject()
+    val vcsService: VCSService by inject()
 
     routing {
-
-        route("/git") {
-            get("/commits") {
-                val branch = this.call.param("branch")
-                val list = csvService.getCommits(branch)
-                this.call.respond(list)
-            }
-        }
-
-
         route("/joop") {
             get("/sql_script") {
                 val id = this.call.request.queryParameters["id"]!!
@@ -43,6 +32,38 @@ fun Application.base() = with(this) {
                 this.call.respond(sqlService.getSqlScript(id))
             }
         }
+
+    }
+
+    //front resource routing
+    routing {
+        get("/") {
+            call.respond(FreeMarkerContent("index.ftl", null))
+        }
+        get("/schema") {
+            call.respond(FreeMarkerContent("schema.ftl", null))
+        }
+
+        get("/schema/commit_options") {
+            val branch = call.request.queryParameters["branch"] ?: "jooq-ext"
+            val size = call.request.queryParameters["size"]?.toInt() ?: Int.MAX_VALUE
+            val tagOnly = call.request.queryParameters["tagOnly"]?.toBoolean() ?: false
+            val list = vcsService.getCommits(branch, size, tagOnly)
+            call.respond(FreeMarkerContent("puzzle/commit_options.ftl", mapOf("list" to list)))
+        }
+
+        get("/schema/generate"){
+
+        }
+
+        get("/sp") {
+            call.respond(FreeMarkerContent("sp.ftl", null))
+        }
+
+        get("/setting") {
+            call.respond(FreeMarkerContent("setting.ftl", null))
+        }
+
         static("/static") {
             resources("static/")
         }

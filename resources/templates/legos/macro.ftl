@@ -33,16 +33,15 @@
             <div>Version Control System</div>
         </div>
         <div class="list-group list-group-flush">
-            <a href="#"
+            <a href="/"
                class="list-group-item list-group-item-action ${('dashboard' == current) ?then('bg-select', 'bg-light')}">Dashboard</a>
-            <a href="#"
+            <a href="/schema"
                class="list-group-item list-group-item-action ${('schema' == current) ?then('bg-select', 'bg-light')}">Schema
                 Migration</a>
-            <a href="#"
-               class="list-group-item list-group-item-action ${('sp' == current) ?then('bg-select', 'bg-light')}">Stored
-                Procedure VCS</a>
-            <a href="#"
-               class="list-group-item list-group-item-action ${('more' == current) ?then('bg-select', 'bg-light')}">More</a>
+            <a href="/sp"
+               class="list-group-item list-group-item-action ${('sp' == current) ?then('bg-select', 'bg-light')}">Stored Procedure VCS</a>
+            <a href="/setting"
+               class="list-group-item list-group-item-action ${('setting' == current) ?then('bg-select', 'bg-light')}">Settings</a>
         </div>
     </div>
 </#macro>

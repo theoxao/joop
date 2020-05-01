@@ -6,10 +6,9 @@ import com.theoxao.common.bson
 import com.theoxao.config.MongoApplication
 import com.theoxao.model.gitlab.Commit
 import com.theoxao.model.gitlab.Tag
-import org.litote.kmongo.eq
-import org.litote.kmongo.find
-import org.litote.kmongo.updateOne
-import org.litote.kmongo.upsert
+import org.bson.conversions.Bson
+import org.litote.kmongo.*
+import kotlin.collections.toList
 
 class CommitRepository(
     mongoApplication: MongoApplication,
@@ -44,8 +43,13 @@ class CommitRepository(
         )
     }
 
-    fun findByBranch(branch: String): List<Commit> {
-        return getCollection<Commit>().find(Commit::branch eq branch).toList()
+    fun findByBranch(branch: String, size: Int, tagOnly: Boolean): List<Commit> {
+        val filter = mutableListOf(Commit::branch eq branch)
+        if (tagOnly) {
+            filter.add(Commit::tagName ne null)
+        }
+        return getCollection<Commit>().find(*filter.toTypedArray()).sort("{commit_timestamp : -1}").limit(size).toMutableList()
+
     }
 
     fun updateTags(branch: String, list: List<Tag>) {
@@ -54,7 +58,7 @@ class CommitRepository(
             list.map {
                 updateOne<Commit>(
                     Commit::id eq it.commit?.id,
-                    set(Commit::tagName.name, it.name)
+                    set("tag_name", it.name)
                 )
             }
         )

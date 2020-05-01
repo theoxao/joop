@@ -17,18 +17,5 @@ import kotlin.test.assertEquals
 
 @KtorExperimentalAPI
 class ApplicationTest {
-    @Test
-    fun testRoot() {
-        withTestApplication({ main() }) {
-            handleRequest(HttpMethod.Get, "/").apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("HELLO WORLD!", response.content)
-            }
-        }
-    }
 
-    @Test
-    fun testInjection() {
-        println(DateTime.parse("2020-04-25T12:13:57.000+08:00").toDate())
-    }
 }
