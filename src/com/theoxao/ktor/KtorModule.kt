@@ -10,9 +10,11 @@ import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.response.respond
 import io.ktor.routing.get
+import io.ktor.routing.post
 import io.ktor.routing.route
 import io.ktor.routing.routing
 import org.koin.ktor.ext.inject
+import java.lang.RuntimeException
 
 /**
  * @author theo
@@ -33,9 +35,15 @@ fun Application.base() = with(this) {
             }
         }
 
+        route("/git") {
+            post("/refresh") {
+
+            }
+        }
+
     }
 
-    //front resource routing
+    //front resource routing and some api
     routing {
         get("/") {
             call.respond(FreeMarkerContent("index.ftl", null))
@@ -51,8 +59,13 @@ fun Application.base() = with(this) {
             val list = vcsService.getCommits(branch, size, tagOnly)
             call.respond(FreeMarkerContent("puzzle/commit_options.ftl", mapOf("list" to list)))
         }
-
-        get("/schema/generate"){
+        get("/version/decode") {
+            val versionId =
+                call.request.queryParameters["versionId"] ?: throw RuntimeException("version id is not provided")
+            val result = vcsService.decodeVersion(versionId)
+            call.respond(FreeMarkerContent("puzzle/commit_options.ftl", mapOf("list" to result)))
+        }
+        get("/schema/generate") {
 
         }
 

@@ -63,4 +63,8 @@ class CommitRepository(
             }
         )
     }
+
+    fun findByCommitId(commitIds: List<String>): List<Commit> {
+        return getCollection<Commit>().find(Commit::shortId `in` commitIds).toList()
+    }
 }

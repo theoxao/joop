@@ -12,6 +12,10 @@
         <@mc.nav current='Schema Migrate' />
         <div class="container-fluid">
 
+            <div style="float: right">
+                <input class="form-control version-id-input" name="versionId" value="" placeholder="Version Id">
+            </div>
+
             <label for="tag-only-switch">
                 Show Tags Only
                 <input id="tag-only-switch" type="checkbox" name="my-checkbox"/>
@@ -43,13 +47,15 @@
                             style="height:800px;overflow:scroll">
                         </ul>
                     </div>
-                    <span data-toggle="dropdown" class="form-control target-select-display" style="border-left: none" disabled></span>
+                    <span data-toggle="dropdown" class="form-control target-select-display" style="border-left: none"
+                          disabled></span>
                 </div>
 
             </div>
 
             <div style="padding-top: 60px">
-                <button  class="btn btn-primary generate-ddl" >Generate</button>
+                <button class="btn btn-primary generate-ddl">Generate</button>
+                <button class="btn btn-primary reverse-commits">Reverse</button>
             </div>
         </div>
     </div>

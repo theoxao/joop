@@ -10,7 +10,12 @@ import com.theoxao.repository.CommitRepository
 class VCSService(private val commitRepository: CommitRepository) {
 
     fun getCommits(branch: String, size: Int, tagOnly: Boolean): List<Commit> {
-        return commitRepository.findByBranch(branch , size, tagOnly)
+        return commitRepository.findByBranch(branch, size, tagOnly)
+    }
+
+    fun decodeVersion(versionId: String): List<Commit> {
+        val commitIds = versionId.split("-")
+        return commitRepository.findByCommitId(commitIds)
     }
 
 }
