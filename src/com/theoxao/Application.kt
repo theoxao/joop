@@ -6,6 +6,7 @@ import com.theoxao.repository.CommitRepository
 import com.theoxao.repository.TagRepository
 import com.theoxao.repository.TreeNodeRepository
 import com.theoxao.script.repo.DefaultScriptRepo
+import com.theoxao.service.SqlService
 import com.theoxao.service.VCSService
 import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.Application
@@ -66,6 +67,7 @@ fun Application.main() = with(this) {
                 single { GitlabScriptSupplier(get(), this@with.environment.config.config("joop")) }
                 single { DefaultScriptRepo(get()) }
                 single { VCSService(get()) }
+                single { SqlService(get(), get()) }
             }
         )
     }

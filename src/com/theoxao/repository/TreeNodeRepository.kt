@@ -5,10 +5,7 @@ import com.mongodb.client.model.Updates.setOnInsert
 import com.theoxao.common.bson
 import com.theoxao.config.MongoApplication
 import com.theoxao.model.gitlab.TreeNode
-import org.litote.kmongo.eq
-import org.litote.kmongo.find
-import org.litote.kmongo.updateOne
-import org.litote.kmongo.upsert
+import org.litote.kmongo.*
 
 
 /**
@@ -41,6 +38,10 @@ class TreeNodeRepository(
             TreeNode::id eq id,
             set(TreeNode::blob.name, blob)
         )
+    }
+
+    fun find(ids: List<String>): List<TreeNode> {
+        return getCollection<TreeNode>().find(TreeNode::id `in` ids).toMutableList()
     }
 
 

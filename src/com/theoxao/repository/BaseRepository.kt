@@ -14,4 +14,6 @@ abstract class BaseRepository<T>(val mongoApplication: MongoApplication) {
     inline fun <reified T : Any> getCollection(): MongoCollection<T> {
         return this.mongoApplication.database.getCollection(collection, T::class.java)
     }
+
+
 }

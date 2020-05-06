@@ -13,9 +13,11 @@ class VCSService(private val commitRepository: CommitRepository) {
         return commitRepository.findByBranch(branch, size, tagOnly)
     }
 
-    fun decodeVersion(versionId: String): List<Commit> {
+    fun decodeVersion(versionId: String): Map<String, Commit> {
         val commitIds = versionId.split("-")
-        return commitRepository.findByCommitId(commitIds)
+        val list = commitRepository.findByCommitId(commitIds)
+        return mapOf("begin" to list.first { it.shortId == commitIds[0] },
+            "end" to list.first { it.shortId == commitIds[1] })
     }
 
 }

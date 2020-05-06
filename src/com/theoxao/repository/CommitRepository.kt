@@ -6,7 +6,6 @@ import com.theoxao.common.bson
 import com.theoxao.config.MongoApplication
 import com.theoxao.model.gitlab.Commit
 import com.theoxao.model.gitlab.Tag
-import org.bson.conversions.Bson
 import org.litote.kmongo.*
 import kotlin.collections.toList
 
@@ -66,5 +65,9 @@ class CommitRepository(
 
     fun findByCommitId(commitIds: List<String>): List<Commit> {
         return getCollection<Commit>().find(Commit::shortId `in` commitIds).toList()
+    }
+
+    fun findOne(commitId: String): Commit? {
+        return getCollection<Commit>().findOne(Commit::shortId eq commitId)
     }
 }
