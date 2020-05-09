@@ -8,7 +8,7 @@ class ForeignKey(
     var commitId: String,
     var keyId: String,
     var refKeyId: String,
-    var tableName: String,
+    override var tableName: String,
     var keyName: String,
     var columnName: String
 ) : Key {

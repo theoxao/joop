@@ -9,7 +9,7 @@ import com.theoxao.config.indexType
 class UniqueKey(
     var commitId: String,
     var keyId: String,
-    var tableName: String,
+    override var tableName: String,
     var keyName: String,
     var columns: Array<String>
 ) : Key {

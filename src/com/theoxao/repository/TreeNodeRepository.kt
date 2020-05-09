@@ -41,7 +41,7 @@ class TreeNodeRepository(
     }
 
     fun find(ids: List<String>): List<TreeNode> {
-        return getCollection<TreeNode>().find(TreeNode::id `in` ids).toMutableList()
+        return getCollection<TreeNode>().find(TreeNode::id `in` ids, TreeNode::type eq "blob").toMutableList()
     }
 
 

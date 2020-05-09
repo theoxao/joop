@@ -51,6 +51,9 @@ class DefaultScriptRepo(
         log.info("found {} un_node record", list.size)
         list.forEach { commit ->
             val nodes = scriptSupplier.fetchFileTree(ref = commit.id)
+            nodes.forEach {
+                it.path = it.path.replace("$basePath/", "")
+            }
             treeNodeRepository.save(nodes)
             commitRepository.updateNodes(commit.id, nodes.map(TreeNode::id))
         }

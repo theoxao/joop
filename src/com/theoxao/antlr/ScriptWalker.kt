@@ -14,11 +14,14 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker
  * @date 2020/4/27
  */
 
-fun preParse(
-    text: String,
-    listenerProvider: () -> JavaParserBaseListener,
-    callback: (JavaParserBaseListener) -> Any
-) {
+fun <T, R> preParse(
+    text: String?,
+    listenerProvider: () -> T,
+    callback: (T) -> R?
+): R? where T : JavaParserBaseListener {
+    if (text == null) {
+        return null
+    }
     val stream = ANTLRInputStream(text)
     val lexer = JavaLexer(stream)
     val tokenStream = CommonTokenStream(lexer)
@@ -28,7 +31,7 @@ fun preParse(
     val compilationUnit = javaParser.compilationUnit()
     val listener = listenerProvider()
     ParseTreeWalker.DEFAULT.walk(listener, compilationUnit)
-    callback(listener)
+    return callback(listener)
 }
 
 const val identity = "Identity"
@@ -93,6 +96,10 @@ class TableWalker(private val commitId: String) : JavaParserBaseListener() {
             indexes.add(IndexKey(commitId, tableName, indexName, columns))
         }
     }
+
+    fun emit(): Table {
+        TODO()
+    }
 }
 
 class KeyWalker(private val commitId: String) : JavaParserBaseListener() {
@@ -100,6 +107,14 @@ class KeyWalker(private val commitId: String) : JavaParserBaseListener() {
     private val identityKeys = mutableListOf<IdentityKey>()
     private val uniqueKeys = mutableListOf<UniqueKey>()
     private val foreignKeys = mutableListOf<ForeignKey>()
+
+    fun emit(): MutableList<Key> {
+        val result = mutableListOf<Key>()
+        result.addAll(identityKeys)
+        result.addAll(uniqueKeys)
+        result.addAll(foreignKeys)
+        return result;
+    }
 
     override fun enterClassDeclaration(ctx: JavaParser.ClassDeclarationContext) {
         if (ctx.typeType()?.classOrInterfaceType()?.text != "AbstractKeys") return
@@ -132,7 +147,6 @@ class KeyWalker(private val commitId: String) : JavaParserBaseListener() {
                 }
             }
         }
-        println("halt")
     }
 }
 

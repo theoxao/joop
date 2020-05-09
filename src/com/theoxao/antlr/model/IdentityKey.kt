@@ -7,7 +7,7 @@ package com.theoxao.antlr.model
 class IdentityKey(
     var commitId: String,
     var keyId: String,
-    var tableName: String,
+    override var tableName: String,
     var columnName: String
 ) : Key {
     override fun add() = """"""

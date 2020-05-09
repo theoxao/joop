@@ -6,6 +6,7 @@ package com.theoxao.antlr.model
  */
 interface Key : Definition {
 
+    var tableName: String
 
     fun add(): String
 }

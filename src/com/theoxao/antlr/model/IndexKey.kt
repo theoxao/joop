@@ -8,7 +8,7 @@ import com.theoxao.config.indexType
  */
 class IndexKey(
     var commitId: String,
-    var tableName: String,
+    override var tableName: String,
     var indexName: String,
     var columns: List<String>
 ) : Key {

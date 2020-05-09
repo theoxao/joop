@@ -12,3 +12,4 @@
 /resources/static/vendor/bootstrap-switch/css/bootstrap3/bootstrap-switch.min.css
 /resources/static/vendor/bootstrap-switch/js/bootstrap-switch.js
 /resources/static/vendor/bootstrap-switch/js/bootstrap-switch.min.js
+/face/build/dist/**/*

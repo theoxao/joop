@@ -16,4 +16,16 @@ data class TreeNode(
     var mode: String
 ) {
     var blob: String? = null
+
+    fun schema(): String? {
+        val split = path.split("/")
+        return if (split.size > 1) return split[0]
+        else null
+    }
+
+    fun jooqType(): String? {
+        val split = path.split("/")
+        return if (split.size == 3) return split[1]
+        else null
+    }
 }
