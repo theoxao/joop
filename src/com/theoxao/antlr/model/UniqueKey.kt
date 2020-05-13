@@ -21,7 +21,7 @@ class UniqueKey(
 
     override fun create(): String =
         if (isPrimary)
-            """ PRIMARY KEY (${columns.toFieldString()}) USING ${indexType()} """
+            """ PRIMARY KEY (${columns.toFieldString()})"""
         else
             """ UNIQUE KEY `$keyName` (${columns.toFieldString()}) USING ${indexType()} """
 

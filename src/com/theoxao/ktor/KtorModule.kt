@@ -44,7 +44,8 @@ fun Application.base() = with(this) {
             get("/generate") {
                 val current = call.request.queryParameters["current"]!!
                 val target = call.request.queryParameters["target"]!!
-                sqlService.getSqlScript(current, target)
+                val result = sqlService.getSqlScript(current, target)
+                call.respond(result)
             }
         }
     }

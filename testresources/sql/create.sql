@@ -1,0 +1,32 @@
+create table `joop`.`table_example`
+(
+    `first_key`                        INT NOT NULL,
+    `type_varchar`                     VARCHAR(255)                                     DEFAULT NULL,
+    `type_big_int`                     BIGINT                                           DEFAULT NULL,
+    `type_char`                        CHAR(20)                                         DEFAULT NULL,
+    `type_date`                        DATE                                             DEFAULT NULL,
+    `type_datetime`                    TIMESTAMP                                        DEFAULT NULL,
+    `type_decimal`                     DECIMAL(5, 5)                                    DEFAULT NULL,
+    `type_double`                      DOUBLE                                           DEFAULT NULL,
+    `type_enum`                        ENUM ('ENUM_VALUE1','ENUM_VALUE2','ENUM_VALUE3') DEFAULT NULL,
+    `type_int`                         INT                                              DEFAULT NULL,
+    `type_text`                        TEXT,
+    `type_timestamp`                   TIMESTAMP                                        DEFAULT NULL,
+    `type_tiny_int`                    TINYINT                                          DEFAULT NULL,
+    `type_tiny_int_2`                  TINYINT                                          DEFAULT NULL,
+    `feat_not_null`                    INT NOT NULL,
+    `feat_second_key`                  INT NOT NULL,
+    `feat_default_value`               INT                                              DEFAULT '500',
+    `feat_current_timestamp_on_update` TIMESTAMP                                        DEFAULT NULL,
+    `feat_reference_key`               INT                                              DEFAULT NULL,
+    `feat_unique_index`                INT NOT NULL,
+    `feat_joint_index_1`               INT                                              DEFAULT NULL,
+    `feat_joint_index_2`               INT                                              DEFAULT NULL,
+    `type_enum_2`                      ENUM ('VALUE_21','value_22','Value_23')          DEFAULT NULL,
+    PRIMARY KEY (`first_key`, `feat_second_key`),
+    UNIQUE KEY `key_table_example_ix_unique_index` (`feat_unique_index`) USING BTREE,
+    KEY `ix_joint_index` (`feat_joint_index_1`, `feat_joint_index_2`) USING BTREE,
+    KEY `fk_reference_key` (`feat_reference_key`) USING BTREE,
+    CONSTRAINT `fk_reference_key` FOREIGN KEY (`feat_reference_key`) REFERENCES `table_example` (`KEY_FK_PRIMARY`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;

@@ -1,5 +1,6 @@
 package com.theoxao.antlr
 
+import com.google.common.base.CaseFormat
 import com.theoxao.antlr.autogen.JavaLexer
 import com.theoxao.antlr.autogen.JavaParser
 import com.theoxao.antlr.autogen.JavaParserBaseListener
@@ -38,16 +39,16 @@ const val identity = "Identity"
 const val uniqueKey = "UniqueKey"
 const val foreignKey = "ForeignKey"
 
-class TableWalker(private val commitId: String) : JavaParserBaseListener() {
+class TableWalker(private val commitId: String, private val schema: String?) : JavaParserBaseListener() {
 
     private var columns: MutableList<Column> = mutableListOf()
 
     private var tableName: String = ""
 
-    private val indexes = mutableListOf<IndexKey>()
+    private val indexes = mutableListOf<Key>()
 
     override fun enterFieldDeclaration(ctx: JavaParser.FieldDeclarationContext) {
-        if (ctx.typeType().classOrInterfaceType().IDENTIFIER(0).text == "TableField") {
+        if (ctx.typeType().classOrInterfaceType()?.IDENTIFIER(0)?.text == "TableField") {
             val vdc = ctx.variableDeclarators().variableDeclarator(0)
             val mc = vdc.variableInitializer().expression().methodCall()
             val elc = mc.children[2] as JavaParser.ExpressionListContext
@@ -56,16 +57,24 @@ class TableWalker(private val commitId: String) : JavaParserBaseListener() {
             val column = Column(commitId, columnName, comment)
             val dataTypeEc = elc.expression(1) as JavaParser.ExpressionContext
             dataTypeEc.dataType(column)
-            val dataTypeName = dataTypeEc.getChild(0).getChild(0).text
-            column.dataType = dataTypeName
+            column.dataType = dataTypeEc.dataType()
             columns.add(column)
         }
     }
 
+    fun JavaParser.ExpressionContext.dataType(): String {
+        val fc = this.getChild(0)
+        if (this.getChild(2) is JavaParser.MethodCallContext && fc is JavaParser.ExpressionContext) {
+            return fc.dataType()
+        }
+        return this.getChild(2).text
+    }
+
+
     override fun enterConstructorDeclaration(ctx: JavaParser.ConstructorDeclarationContext) {
-        this.tableName =
-            ctx.constructorBody?.blockStatement(0)?.statement()?.expression()?.methodCall()?.expressionList()
-                ?.expression(0)?.text ?: ""
+        val name = ctx.constructorBody?.blockStatement(0)?.statement()?.expression()?.methodCall()?.expressionList()
+            ?.expression(0)?.text ?: ""
+        if (name != "alias") this.tableName = name.replace("\"", "")
     }
 
     private fun JavaParser.ExpressionContext.dataType(column: Column) {
@@ -83,22 +92,22 @@ class TableWalker(private val commitId: String) : JavaParserBaseListener() {
     //walk for indexes
     override fun enterClassDeclaration(ctx: JavaParser.ClassDeclarationContext) {
         if (ctx.typeType()?.classOrInterfaceType()?.text != "AbstractIndex") return
-        ctx.classBody().classBodyDeclaration().firstOrNull()?.let { cbd ->
+        ctx.classBody().classBodyDeclaration()?.forEach { cbd ->
             val fd = cbd.memberDeclaration().fieldDeclaration()
             val keyType = fd.typeType().classOrInterfaceType().IDENTIFIER(0)
             val vd = fd.variableDeclarators().variableDeclarator(0)
             val keyId = vd.variableDeclaratorId().IDENTIFIER().text
             val el = vd.variableInitializer().expression().methodCall().expressionList()
-            val tableName = el.expression(0).IDENTIFIER().text
-            val indexName = el.expression(1).IDENTIFIER().text
+            val tableName = el.expression(0).text.replace("\"", "")
+            val indexName = el.expression(1).text.replace("\"", "")
             val columns = el.expression().filterIndexed { index, _ -> index > 1 }
-                .map { it.IDENTIFIER().text }
+                .map { it.text.replace("\"", "") }
             indexes.add(IndexKey(commitId, tableName, indexName, columns))
         }
     }
 
     fun emit(): Table {
-        TODO()
+        return Table(commitId, schema, tableName, columns, indexes)
     }
 }
 
@@ -132,7 +141,7 @@ class KeyWalker(private val commitId: String) : JavaParserBaseListener() {
                 }
                 uniqueKey -> {
                     val tableName = el.expression(0).getChild(2).text.toLowerCase()
-                    val keyName = el.expression(1).primary().text
+                    val keyName = el.expression(1).primary().text.toLowerCase().replace("\"", "")
                     val columns = el.expression().subList(2, el.expression().size).map { ec ->
                         ec.getChild(2).text.toLowerCase()
                     }.toTypedArray()
@@ -140,9 +149,9 @@ class KeyWalker(private val commitId: String) : JavaParserBaseListener() {
                 }
                 foreignKey -> {
                     val refKeyId = el.expression(0).getChild(2).text
-                    val tableName = el.expression(1).getChild(2).text
-                    val keyName = el.expression(2).primary().text
-                    val fieldName = el.expression(3).getChild(2).text
+                    val tableName = el.expression(1).getChild(2).text.toLowerCase()
+                    val keyName = el.expression(2).primary().text.toLowerCase().replace("\"", "")
+                    val fieldName = el.expression(3).getChild(2).text.toLowerCase()
                     foreignKeys.add(ForeignKey(commitId, keyId, refKeyId, tableName, keyName, fieldName))
                 }
             }
@@ -157,13 +166,17 @@ class EnumWalker(commitId: String) : JavaParserBaseListener() {
     lateinit var enums: List<String>
 
     override fun enterEnumDeclaration(ctx: JavaParser.EnumDeclarationContext) {
-        this.enumName = ctx.IDENTIFIER().text
+        this.enumName = ctx.IDENTIFIER().text.replace("_", "")
     }
 
     override fun enterEnumConstants(ctx: JavaParser.EnumConstantsContext) {
         enums = ctx.enumConstant().map {
             it.IDENTIFIER().text
         }
+    }
+
+    fun emit(): Pair<String, List<String>> {
+        return enumName to enums
     }
 
 }

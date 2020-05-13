@@ -57,30 +57,34 @@ class Column(
 
     private fun definition(prefix: String = "") = """
             $prefix
-            $columnName  
-            ${mapDataType(dataType)}  
+            `$columnName`  
+            ${dataType.mapDataType()}  
             ${if (autoIncrement) "auto_increment key" else ""}  
-            ${length?.let { "($this)" }}  
-            ${precision?.let { "($this)" }}   
-            ${if (nullable) "NULL" else "NOT NULL"}  
-            ${mapDefaultValue(dataType, defaultValue)}  
+            ${length?.let { "($it)" } ?: ""}  
+            ${precision?.let { "($it)" } ?: ""}   
+            ${if (nullable) "" else "NOT NULL"}  
+            ${mapDefaultValue(dataType, defaultValue)?.let { "DEFAULT $it" } ?: ""}  
             ${if (onUpdateForUpdateTime() && (this.columnName in updateTimeFields)) "ON UPDATE CURRENT_TIMESTAMP" else ""}
         """.trimIndent().trim('\n')
 
     //TODO
-    private fun mapDefaultValue(dataType: String, defaultValue: String?): String {
-        defaultValue ?: return ""
+    private fun mapDefaultValue(dataType: String, defaultValue: String?): String? {
         return when (dataType) {
-            "" -> defaultValue
-            else -> throw RuntimeException("data type not support")
+            "CLOB" -> null
+            else -> if (nullable)
+                when (dataType) {
+                    "INTEGER" -> defaultValue?.let { "'$defaultValue'" }
+                    else -> defaultValue
+                }
+                    ?: "NULL" else null
         }
     }
 
-    //TODO
-    private fun mapDataType(dataType: String): String {
-        return when (dataType) {
-            "" -> ""
-            else -> throw RuntimeException("data type not support")
+    private fun String.mapDataType(): String {
+        return this@Column.enums?.let { ce -> return@let "ENUM(${ce.joinToString(",") { "'$it'" }})" } ?: when (this) {
+            "CLOB" -> "TEXT"
+            "INTEGER" -> "INT"
+            else -> this
         }
     }
 

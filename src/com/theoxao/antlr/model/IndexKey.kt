@@ -13,7 +13,7 @@ class IndexKey(
     var columns: List<String>
 ) : Key {
     override fun create(): String =
-        """ UNIQUE KEY `$indexName` (${columns.toFieldString()}) USING ${indexType()} """
+        """ KEY `$indexName` (${columns.toFieldString()}) USING ${indexType()} """
 
     fun drop() = ""
 

@@ -8,10 +8,6 @@ import com.theoxao.antlr.model.Key
  */
 class KeyDiff(
     val schema: String?,
-    val current: Map<String, Key>?,
-    val target: Map<String, Key>?
-) {
-    fun keyForTable(tableName: String): Pair<Key?, Key?> {
-        return current?.get(tableName) to target?.get(tableName)
-    }
-}
+    val current: Map<String, List<Key>>?,
+    val target: Map<String, List<Key>>?
+)
